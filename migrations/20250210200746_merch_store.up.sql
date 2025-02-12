@@ -1,7 +1,7 @@
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    name VARCHAR(64) NOT NULL UNIQUE,
+    password VARCHAR(256) NOT NULL,
     balance INT DEFAULT 1000 NOT NULL
 );
 
@@ -13,16 +13,18 @@ CREATE TABLE items(
 
 CREATE TABLE sales(
     id SERIAL PRIMARY KEY,
-    item_id INT NOT NULL REFERENCES items(id),
     user_id INT NOT NULL REFERENCES users(id),
-    quantity INT NOT NULL DEFAULT 1
+    item_id INT NOT NULL REFERENCES items(id),
+    quantity INT NOT NULL DEFAULT 1,
+    UNIQUE (user_id, item_id)
 );
 
 CREATE TABLE operations(
     id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL REFERENCES users(id),
     receiver_id INT NOT NULL REFERENCES users(id),
-    amount INT NOT NULL
+    amount INT NOT NULL,
+    UNIQUE (sender_id, receiver_id)
 );
 
 -- TODO: Индексы (сначала составить запросы)

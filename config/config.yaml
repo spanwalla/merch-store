@@ -1,0 +1,15 @@
+app:
+  name: 'merch-store'
+  version: '1.0.0'
+
+http:
+  port: '8080'
+
+logger:
+  level: 'debug'
+
+postgres:
+  pool_max: 5
+
+jwt:
+  token_ttl: 2h

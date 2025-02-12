@@ -17,18 +17,18 @@ type TokenClaims struct {
 	UserId int
 }
 
-type UserService struct {
+type AuthService struct {
 	userRepo       repository.User
 	passwordHasher hasher.PasswordHasher
 	signKey        string
 	tokenTTL       time.Duration
 }
 
-func NewUserService(userRepo repository.User, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *UserService {
-	return &UserService{userRepo: userRepo, passwordHasher: passwordHasher, signKey: signKey, tokenTTL: tokenTTL}
+func NewAuthService(userRepo repository.User, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *AuthService {
+	return &AuthService{userRepo: userRepo, passwordHasher: passwordHasher, signKey: signKey, tokenTTL: tokenTTL}
 }
 
-func (s *UserService) createUser(ctx context.Context, input UserGenerateTokenInput) (int, error) {
+func (s *AuthService) createUser(ctx context.Context, input AuthGenerateTokenInput) (int, error) {
 	user := entity.User{
 		Name:     input.Name,
 		Password: s.passwordHasher.Hash(input.Password),
@@ -38,14 +38,14 @@ func (s *UserService) createUser(ctx context.Context, input UserGenerateTokenInp
 		if errors.Is(err, repository.ErrAlreadyExists) {
 			return 0, ErrUserAlreadyExists
 		}
-		log.Errorf("UserService.createUser - userRepo.CreateUser: %v", err)
+		log.Errorf("AuthService.createUser - userRepo.CreateUser: %v", err)
 		return 0, ErrCannotCreateUser
 	}
 	return userId, nil
 }
 
-func (s *UserService) GenerateToken(ctx context.Context, input UserGenerateTokenInput) (string, error) {
-	user, err := s.userRepo.GetUserByNameAndPassword(ctx, input.Name, s.passwordHasher.Hash(input.Password))
+func (s *AuthService) GenerateToken(ctx context.Context, input AuthGenerateTokenInput) (string, error) {
+	user, err := s.userRepo.GetUserByName(ctx, input.Name)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			var userId int
@@ -55,9 +55,11 @@ func (s *UserService) GenerateToken(ctx context.Context, input UserGenerateToken
 			}
 			user.Id = userId
 		} else {
-			log.Errorf("UserService.GenerateToken - userRepo.GetUserByNameAndPassword: %v", err)
+			log.Errorf("AuthService.GenerateToken - userRepo.GetUserByName: %v", err)
 			return "", ErrCannotGetUser
 		}
+	} else if user.Password != s.passwordHasher.Hash(input.Password) {
+		return "", ErrWrongPassword
 	}
 
 	// Generate JWT
@@ -72,14 +74,14 @@ func (s *UserService) GenerateToken(ctx context.Context, input UserGenerateToken
 	// Sign token
 	tokenString, err := token.SignedString([]byte(s.signKey))
 	if err != nil {
-		log.Errorf("UserService.GenerateToken - token.SignedString: %v", err)
+		log.Errorf("AuthService.GenerateToken - token.SignedString: %v", err)
 		return "", ErrCannotSignToken
 	}
 
 	return tokenString, nil
 }
 
-func (s *UserService) VerifyToken(tokenString string) (int, error) {
+func (s *AuthService) VerifyToken(tokenString string) (int, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
