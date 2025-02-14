@@ -58,7 +58,7 @@ func TestUserRepo_CreateUser(t *testing.T) {
 				},
 			},
 			mockBehavior: func(m pgxmock.PgxPoolIface, args args) {
-				m.ExpectExec(`INSERT INTO users`).
+				m.ExpectQuery(`INSERT INTO users`).
 					WithArgs(args.user.Name, args.user.Password).
 					WillReturnError(&pgconn.PgError{Code: "23505"})
 			},
@@ -407,6 +407,20 @@ func TestUserRepo_Deposit(t *testing.T) {
 					WillReturnResult(pgxmock.NewResult(`UPDATE`, 1))
 			},
 			wantErr: false,
+		},
+		{
+			name: "no rows affected",
+			args: args{
+				ctx:    context.Background(),
+				id:     1,
+				amount: 100,
+			},
+			mockBehavior: func(m pgxmock.PgxPoolIface, args args) {
+				m.ExpectExec(`UPDATE users`).
+					WithArgs(args.amount, args.id).
+					WillReturnResult(pgxmock.NewResult(`UPDATE`, 0))
+			},
+			wantErr: true,
 		},
 		{
 			name: "unknown error",
