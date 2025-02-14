@@ -33,9 +33,18 @@ func extractTx(ctx context.Context) (pgx.Tx, bool) {
 
 // QueryRunner является общим интерфейсом для методов, выполняющих запросы.
 type QueryRunner interface {
-	Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error)
-	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
-	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
+
+type PgxPool interface {
+	Close()
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+	Begin(ctx context.Context) (pgx.Tx, error)
+	Ping(ctx context.Context) error
 }
 
 // Postgres -.
@@ -45,7 +54,7 @@ type Postgres struct {
 	connTimeout  time.Duration
 
 	Builder squirrel.StatementBuilderType
-	pool    *pgxpool.Pool
+	Pool    PgxPool
 }
 
 // New -.
@@ -71,12 +80,12 @@ func New(url string, opts ...Option) (*Postgres, error) {
 	poolConfig.MaxConns = int32(pg.maxPoolSize)
 
 	for pg.connAttempts > 0 {
-		pg.pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
+		pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
 		if err != nil {
 			return nil, fmt.Errorf("postgres - NewPostgres - pgxpool.NewWithConfig: %w", err)
 		}
 
-		if err = pg.pool.Ping(context.Background()); err == nil {
+		if err = pg.Pool.Ping(context.Background()); err == nil {
 			break
 		}
 
@@ -94,8 +103,8 @@ func New(url string, opts ...Option) (*Postgres, error) {
 
 // Close -.
 func (pg *Postgres) Close() {
-	if pg.pool != nil {
-		pg.pool.Close()
+	if pg.Pool != nil {
+		pg.Pool.Close()
 	}
 }
 
@@ -105,12 +114,12 @@ func (pg *Postgres) GetQueryRunner(ctx context.Context) QueryRunner {
 	if tx, ok := extractTx(ctx); ok {
 		return tx
 	}
-	return pg.pool
+	return pg.Pool
 }
 
 // WithinTransaction выполняет функцию fn в рамках транзакции.
 func (pg *Postgres) WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error {
-	tx, err := pg.pool.Begin(ctx)
+	tx, err := pg.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("postgres - WithinTransaction - Begin: %w", err)
 	}

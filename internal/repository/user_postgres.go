@@ -35,8 +35,8 @@ func (r *UserRepo) CreateUser(ctx context.Context, user entity.User) (int, error
 			if pgErr.Code == "23505" {
 				return 0, ErrAlreadyExists
 			}
-			return 0, fmt.Errorf("UserRepo.CreateUser - QueryRow: %w", err)
 		}
+		return 0, fmt.Errorf("UserRepo.CreateUser - QueryRow: %w", err)
 	}
 
 	return id, nil

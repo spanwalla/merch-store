@@ -29,8 +29,8 @@ type User interface {
 	CreateUser(ctx context.Context, user entity.User) (int, error)
 	GetUserByName(ctx context.Context, username string) (entity.User, error)
 	GetUserIdByName(ctx context.Context, username string) (int, error)
-	Withdraw(ctx context.Context, id int, amount int) error
-	Deposit(ctx context.Context, id int, amount int) error
+	Withdraw(ctx context.Context, id, amount int) error
+	Deposit(ctx context.Context, id, amount int) error
 }
 
 type UserReport interface {

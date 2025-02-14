@@ -36,10 +36,7 @@ func TestUserReportService_Get(t *testing.T) {
 				u.EXPECT().Get(args.ctx, args.userId).
 					Return(entity.UserReport{
 						Coins: 1000,
-						Inventory: []struct {
-							Type     string `json:"type"`
-							Quantity int    `json:"quantity"`
-						}{
+						Inventory: []entity.Inventory{
 							{
 								Type:     "t-shirt",
 								Quantity: 10,
@@ -49,20 +46,8 @@ func TestUserReportService_Get(t *testing.T) {
 								Quantity: 0,
 							},
 						},
-						CoinHistory: struct {
-							Received []struct {
-								FromUser string `json:"fromUser"`
-								Amount   int    `json:"amount"`
-							} `json:"received"`
-							Sent []struct {
-								ToUser string `json:"toUser"`
-								Amount int    `json:"amount"`
-							} `json:"sent"`
-						}{
-							Received: []struct {
-								FromUser string `json:"fromUser"`
-								Amount   int    `json:"amount"`
-							}{
+						CoinHistory: entity.CoinHistory{
+							Received: []entity.ReceivedTransaction{
 								{
 									FromUser: "test-user-1",
 									Amount:   10,
@@ -72,19 +57,13 @@ func TestUserReportService_Get(t *testing.T) {
 									Amount:   20,
 								},
 							},
-							Sent: []struct {
-								ToUser string `json:"toUser"`
-								Amount int    `json:"amount"`
-							}{},
+							Sent: []entity.SentTransaction{},
 						},
 					}, nil)
 			},
 			want: entity.UserReport{
 				Coins: 1000,
-				Inventory: []struct {
-					Type     string `json:"type"`
-					Quantity int    `json:"quantity"`
-				}{
+				Inventory: []entity.Inventory{
 					{
 						Type:     "t-shirt",
 						Quantity: 10,
@@ -94,20 +73,8 @@ func TestUserReportService_Get(t *testing.T) {
 						Quantity: 0,
 					},
 				},
-				CoinHistory: struct {
-					Received []struct {
-						FromUser string `json:"fromUser"`
-						Amount   int    `json:"amount"`
-					} `json:"received"`
-					Sent []struct {
-						ToUser string `json:"toUser"`
-						Amount int    `json:"amount"`
-					} `json:"sent"`
-				}{
-					Received: []struct {
-						FromUser string `json:"fromUser"`
-						Amount   int    `json:"amount"`
-					}{
+				CoinHistory: entity.CoinHistory{
+					Received: []entity.ReceivedTransaction{
 						{
 							FromUser: "test-user-1",
 							Amount:   10,
@@ -117,10 +84,7 @@ func TestUserReportService_Get(t *testing.T) {
 							Amount:   20,
 						},
 					},
-					Sent: []struct {
-						ToUser string `json:"toUser"`
-						Amount int    `json:"amount"`
-					}{},
+					Sent: []entity.SentTransaction{},
 				},
 			},
 			wantErr: false,
