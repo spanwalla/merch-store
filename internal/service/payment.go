@@ -13,10 +13,10 @@ type PaymentService struct {
 	itemRepo      repository.Item
 	operationRepo repository.Operation
 	saleRepo      repository.Sale
-	transactor    Transactor
+	transactor    repository.Transactor
 }
 
-func NewPaymentService(userRepo repository.User, itemRepo repository.Item, operationRepo repository.Operation, saleRepo repository.Sale, transactor Transactor) *PaymentService {
+func NewPaymentService(userRepo repository.User, itemRepo repository.Item, operationRepo repository.Operation, saleRepo repository.Sale, transactor repository.Transactor) *PaymentService {
 	return &PaymentService{
 		userRepo:      userRepo,
 		itemRepo:      itemRepo,

@@ -8,12 +8,7 @@ import (
 	"time"
 )
 
-//go:generate mockgen -source=service.go -destination=mocks/mock.go -package=service_mocks
-
-// Transactor определяет интерфейс для работы с транзакциями.
-type Transactor interface {
-	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
-}
+//go:generate mockgen -source=service.go -destination=../mocks/service/mock.go -package=servicemocks
 
 type AuthGenerateTokenInput struct {
 	Name     string
@@ -56,7 +51,7 @@ type Dependencies struct {
 	Hasher     hasher.PasswordHasher
 	SignKey    string
 	TokenTTL   time.Duration
-	Transactor Transactor
+	Transactor repository.Transactor
 }
 
 func NewServices(deps Dependencies) *Services {

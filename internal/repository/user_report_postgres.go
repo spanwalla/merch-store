@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	sq "github.com/Masterminds/squirrel"
+	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/spanwalla/merch-store/internal/entity"
 	"github.com/spanwalla/merch-store/pkg/postgres"
@@ -37,8 +37,8 @@ func (r *UserReportRepo) Get(ctx context.Context, id int) (entity.UserReport, er
 		Join("users s ON o.sender_id = s.id").
 		Where("o.receiver_id = u.id")
 
-	inventorySql, _, _ := sq.Expr("(?) AS inventory", inventorySubquery).ToSql()
-	historySql, _, _ := sq.Expr("jsonb_build_object('sent', COALESCE((?), '[]'::jsonb), 'received', COALESCE((?), '[]'::jsonb)) AS coin_history", sentSubquery, receivedSubquery).ToSql()
+	inventorySql, _, _ := squirrel.Expr("(?) AS inventory", inventorySubquery).ToSql()
+	historySql, _, _ := squirrel.Expr("jsonb_build_object('sent', COALESCE((?), '[]'::jsonb), 'received', COALESCE((?), '[]'::jsonb)) AS coin_history", sentSubquery, receivedSubquery).ToSql()
 
 	sql, args, _ := r.Builder.
 		Select(

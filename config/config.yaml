@@ -9,7 +9,7 @@ logger:
   level: 'debug'
 
 postgres:
-  pool_max: 5
+  pool_max: 15
 
 jwt:
   token_ttl: 2h

@@ -6,7 +6,12 @@ import (
 	"github.com/spanwalla/merch-store/pkg/postgres"
 )
 
-//go:generate mockgen -source=repository.go -destination=mocks/mock.go -package=repository_mocks
+//go:generate mockgen -source=repository.go -destination=../mocks/repository/mock.go -package=repomocks
+
+// Transactor определяет интерфейс для работы с транзакциями.
+type Transactor interface {
+	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
 
 type Operation interface {
 	Upsert(ctx context.Context, operation entity.Operation) error

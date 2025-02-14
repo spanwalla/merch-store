@@ -17,4 +17,6 @@ var (
 	ErrUserNotFound        = errors.New("user not found")
 	ErrCannotTransferCoins = errors.New("cannot transfer coins")
 	ErrSelfTransfer        = errors.New("cannot transfer coins to yourself")
+
+	ErrCannotGetReport = errors.New("cannot get report")
 )

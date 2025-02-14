@@ -30,11 +30,12 @@ test: ### run test
 .PHONY: test
 
 mockgen: ### generate mock
-	mockgen -source='internal/service/service.go'       -destination='internal/service/mocks/mock.go'    -package=service_mocks
-	mockgen -source='internal/repository/repository.go' -destination='internal/repository/mocks/mock.go' -package=repository_mocks
+	mockgen -source='internal/service/service.go'       -destination='internal/mocks/service/mock.go'    -package=servicemocks
+	mockgen -source='internal/repository/repository.go' -destination='internal/mocks/repository/mock.go' -package=repomocks
+	mockgen -source='pkg/hasher/password.go'            -destination='internal/mocks/hasher/mock.go'     -package=hashermocks
 .PHONY: mockgen
 
 bin-deps: ### install binary dependencies
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-	go install github.com/golang/mock/mockgen@latest
+	go install go.uber.org/mock/mockgen@latest
 .PHONY: bin-deps
