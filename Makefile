@@ -34,7 +34,7 @@ linter-golangci: ### Check by golangci linter
 .PHONY: linter-golangci
 
 test: ### Run test
-	go test -v ./...
+	go test -v './internal/...'
 .PHONY: test
 
 integration-test: ### Run integration tests
