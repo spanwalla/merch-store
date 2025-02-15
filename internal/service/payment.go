@@ -46,7 +46,6 @@ func (s *PaymentService) Transfer(ctx context.Context, input PaymentTransferInpu
 		Amount:     input.Amount,
 	}
 
-	log.Debug("PaymentService.Transfer: transaction finished")
 	return s.transactor.WithinTransaction(ctx, func(txCtx context.Context) error {
 		err = s.userRepo.Withdraw(txCtx, operation.SenderId, operation.Amount)
 		if err != nil {
@@ -72,7 +71,6 @@ func (s *PaymentService) Transfer(ctx context.Context, input PaymentTransferInpu
 			return ErrCannotTransferCoins
 		}
 
-		log.Debug("PaymentService.Transfer: transaction finished")
 		return nil
 	})
 }
@@ -109,7 +107,6 @@ func (s *PaymentService) BuyItem(ctx context.Context, input PaymentBuyItemInput)
 			return ErrCannotBuyItem
 		}
 
-		log.Debug("PaymentService.BuyItem: transaction finished")
 		return nil
 	})
 }

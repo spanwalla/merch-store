@@ -47,6 +47,10 @@ integration-test: ### Run integration tests
 	go clean -testcache && go test -v './integration-test/...'
 .PHONY: integration-test
 
+load-test: ### Run load test
+	docker run --rm -v "$(pwd)/scripts:/scripts" grafana/k6 run /scripts/k6_load_test.js
+.PHONY: load-test
+
 mockgen: ### Generate mock
 	mockgen -source='internal/service/service.go'       -destination='internal/mocks/service/mock.go'    -package=servicemocks
 	mockgen -source='internal/repository/repository.go' -destination='internal/mocks/repository/mock.go' -package=repomocks
