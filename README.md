@@ -33,3 +33,6 @@ make compose-up-integration-test
 ИЛИ `docker-compose --profile tests up --build --abort-on-container-exit --exit-code-from integration`.
 
 После запуска сервис будет доступен по адресу `http://localhost:8080`.
+
+## Вопросы и решения
+1. Во время работы над интеграционными тестами понадобилось быть уверенным в доступности API. С этой целью добавил маршрут `/health`, возвращающий `200 OK`.
