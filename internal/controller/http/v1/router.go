@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
 	"github.com/spanwalla/merch-store/internal/service"
+	"net/http"
 	"os"
 )
 
@@ -15,6 +16,8 @@ func ConfigureRouter(handler *echo.Echo, services *service.Services) {
 		Output: setLogsFile(),
 	}))
 	handler.Use(middleware.Recover())
+
+	handler.GET("/health", func(c echo.Context) error { return c.NoContent(http.StatusOK) })
 
 	authGroup := handler.Group("/api/auth")
 	{
