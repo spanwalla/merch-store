@@ -41,5 +41,7 @@ services:
       dockerfile: integration-test/Dockerfile
     depends_on:
       - app
+    profiles:
+      - tests
     networks:
       - net

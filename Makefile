@@ -6,7 +6,7 @@ compose-up: ### Run docker-compose
 .PHONY: compose-up
 
 compose-up-integration-test: ### Run docker-compose with integration tests
-	docker-compose up --build --abort-on-container-exit --exit-code-from integration
+	docker-compose --profile tests up --build --abort-on-container-exit --exit-code-from integration
 .PHONY: compose-up-integration-test
 
 compose-down: ### Down docker-compose
