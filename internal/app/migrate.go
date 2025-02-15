@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -52,7 +53,7 @@ func init() {
 		}
 	}(m)
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Fatalf("migrate: up error: %s", err)
+		panic(fmt.Errorf("migrate: up error: %w", err))
 	}
 
 	if errors.Is(err, migrate.ErrNoChange) {

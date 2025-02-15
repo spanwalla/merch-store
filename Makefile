@@ -29,6 +29,10 @@ migrate-down: ### Migration down
 	echo "y" | migrate -path migrations -database 'postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:{$(POSTGRES_PORT)}/$(POSTGRES_DB)?sslmode=disable' down
 .PHONY: migrate-down
 
+linter-golangci: ### Check by golangci linter
+	golangci-lint run
+.PHONY: linter-golangci
+
 test: ### Run test
 	go test -v ./...
 .PHONY: test

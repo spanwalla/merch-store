@@ -82,7 +82,7 @@ func (s *AuthService) GenerateToken(ctx context.Context, input AuthGenerateToken
 }
 
 func (s *AuthService) VerifyToken(tokenString string) (int, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}

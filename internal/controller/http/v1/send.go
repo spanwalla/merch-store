@@ -41,13 +41,14 @@ func (r *sendRoutes) sendCoin(c echo.Context) error {
 		Amount:     input.Amount,
 	})
 	if err != nil {
-		if errors.Is(err, service.ErrUserNotFound) {
+		switch {
+		case errors.Is(err, service.ErrUserNotFound):
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
-		} else if errors.Is(err, service.ErrNotEnoughBalance) {
+		case errors.Is(err, service.ErrNotEnoughBalance):
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
-		} else if errors.Is(err, service.ErrSelfTransfer) {
+		case errors.Is(err, service.ErrSelfTransfer):
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
-		} else {
+		default:
 			newErrorResponse(c, http.StatusInternalServerError, "internal server error")
 		}
 		return err

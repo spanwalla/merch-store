@@ -50,7 +50,7 @@ func NewCustomValidator() *CustomValidator {
 	return cv
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
+func (cv *CustomValidator) Validate(i any) error {
 	err := cv.v.Struct(i)
 	if err != nil {
 		fieldErr := err.(validator.ValidationErrors)[0]
@@ -60,7 +60,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	return nil
 }
 
-func (cv *CustomValidator) newValidationError(field string, _ interface{}, tag string, param string) error {
+func (cv *CustomValidator) newValidationError(field string, _ any, tag string, param string) error {
 	switch tag {
 	case "required":
 		return fmt.Errorf("field %s is required", field)

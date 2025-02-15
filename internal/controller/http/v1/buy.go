@@ -39,11 +39,12 @@ func (r *buyRoutes) buyItem(c echo.Context) error {
 		ItemName: input.Item,
 	})
 	if err != nil {
-		if errors.Is(err, service.ErrItemNotFound) {
+		switch {
+		case errors.Is(err, service.ErrItemNotFound):
+			newErrorResponse(c, http.StatusNotFound, err.Error())
+		case errors.Is(err, service.ErrNotEnoughBalance):
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
-		} else if errors.Is(err, service.ErrNotEnoughBalance) {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-		} else {
+		default:
 			newErrorResponse(c, http.StatusInternalServerError, "internal server error")
 		}
 		return err

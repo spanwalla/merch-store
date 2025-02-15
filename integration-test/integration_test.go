@@ -69,7 +69,7 @@ func getAuthToken(username, password string) (string, error) {
 	var token string
 	var err error
 
-	body := map[string]interface{}{
+	body := map[string]any{
 		"username": username,
 		"password": password,
 	}

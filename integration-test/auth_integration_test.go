@@ -16,13 +16,13 @@ func TestAuth(t *testing.T) {
 
 	testCases := []struct {
 		description      string
-		body             map[string]interface{}
+		body             map[string]any
 		expectedStatus   IStep
 		expectedResponse IStep
 	}{
 		{
 			description: "registration success",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": testUsername,
 				"password": testPassword,
 			},
@@ -31,7 +31,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			description: "authorization success",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": testUsername,
 				"password": testPassword,
 			},
@@ -40,7 +40,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			description: "authorization wrong password",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": testUsername,
 				"password": testWrongPassword,
 			},
@@ -49,7 +49,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			description: "registration bad password",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": "test_" + gofakeit.Username(),
 				"password": testBadPassword,
 			},
@@ -58,7 +58,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			description: "empty fields",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": "",
 				"password": "",
 			},
@@ -67,7 +67,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			description: "password wasnt provided",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"username": "test_" + gofakeit.Username(),
 			},
 			expectedStatus:   Expect().Status().Equal(http.StatusBadRequest),

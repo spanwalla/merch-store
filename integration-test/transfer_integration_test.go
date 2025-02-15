@@ -13,14 +13,14 @@ func TestTransfer(t *testing.T) {
 
 	testCases := []struct {
 		description      string
-		body             map[string]interface{}
+		body             map[string]any
 		authToken        string
 		expectedStatus   IStep
 		expectedResponse IStep
 	}{
 		{
 			description: "unauthorized",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername,
 				"amount": 88,
 			},
@@ -30,7 +30,7 @@ func TestTransfer(t *testing.T) {
 		},
 		{
 			description: "success",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername,
 				"amount": 13,
 			},
@@ -40,7 +40,7 @@ func TestTransfer(t *testing.T) {
 		},
 		{
 			description: "wrong username",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername + "$(!kf",
 				"amount": 49,
 			},
@@ -50,7 +50,7 @@ func TestTransfer(t *testing.T) {
 		},
 		{
 			description: "self transfer",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername,
 				"amount": 10,
 			},
@@ -60,7 +60,7 @@ func TestTransfer(t *testing.T) {
 		},
 		{
 			description: "negative amount",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername,
 				"amount": -10,
 			},
@@ -70,7 +70,7 @@ func TestTransfer(t *testing.T) {
 		},
 		{
 			description: "not all fields are set",
-			body: map[string]interface{}{
+			body: map[string]any{
 				"toUser": secondUsername,
 			},
 			authToken:        firstToken,
