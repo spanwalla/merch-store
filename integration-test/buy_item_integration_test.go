@@ -50,7 +50,6 @@ func TestBuyItem(t *testing.T) {
 		Test(t,
 			Description(tc.description),
 			Get(basePath+"/buy/"+tc.item),
-			Send().Headers("Content-Type").Add("application/json"),
 			authHeader,
 			tc.expectedStatus,
 			tc.expectedResponse,

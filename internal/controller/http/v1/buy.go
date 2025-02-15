@@ -41,7 +41,7 @@ func (r *buyRoutes) buyItem(c echo.Context) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, service.ErrItemNotFound):
-			newErrorResponse(c, http.StatusNotFound, err.Error())
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
 		case errors.Is(err, service.ErrNotEnoughBalance):
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 		default:
