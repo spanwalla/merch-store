@@ -37,6 +37,12 @@ test: ### Run test
 	go test -v './internal/...'
 .PHONY: test
 
+cover: ### Count test coverage
+	go test -coverprofile='coverage.out' './internal/...'
+	go tool cover -func='coverage.out'
+	rm 'coverage.out'
+.PHONY: cover
+
 integration-test: ### Run integration tests
 	go clean -testcache && go test -v './integration-test/...'
 .PHONY: integration-test
